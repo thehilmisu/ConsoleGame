@@ -6,8 +6,6 @@
 
 namespace hilmisu{
 
-
-
     class Utilities{
         public:
             struct rect

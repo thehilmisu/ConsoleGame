@@ -20,7 +20,6 @@ public:
 	void createRandomTraffic(float fElapsedTime)
 	{
 		float x_value = hilmisu::Utilities::rand_FloatRange(50.0f, 160.0f);
-		// std::cout << vRects.size() << std::endl;
 		// to do
 		if (vRects.size() > 3)
 		{
@@ -76,82 +75,63 @@ public:
 		{
 			speed = 0;
 		}
-		int direction = 0;
+
+
+		float cx = vRects[0].size.x / 2;
+		float cy = vRects[0].size.y / 2;
+
+		olc::vf2d half_dims(cx,cy);
+		olc::vf2d tr(-cx,cy);
+		olc::vf2d br(-cx,-cy);
+		olc::vf2d bl(cx,-cy);
+		olc::vf2d tl(cx,cy);
+
 		if (speed != 0.0f)
 		{
-
-				//std::cout << "###########" << newCoordinates.x << newCoordinates.y << m_angle << std::endl;
-		
-
-		}
-		else if(speed == 0.0f)
-		{
-			
 			if((GetKey(olc::Key::A).bHeld) || (GetKey(olc::Key::D).bHeld))
 			{
 				if (GetKey(olc::Key::A).bHeld)
 				{
-					direction = 1;
-					m_angle += -0.03f;
+					m_angle += -0.01f;
 				}
 				if (GetKey(olc::Key::D).bHeld)
 				{
-					direction = 0;
-					m_angle += 0.03f;
+					m_angle += 0.01f;
 				}
 				//m_angle = 45;
-				float cx = vRects[0].size.x / 2;
 
-				float cy = vRects[0].size.y / 2;
+			}
 
-				olc::vf2d half_dims(cx,cy);
-				olc::vf2d tl(-cx,cy);
-				olc::vf2d bl(-cx,-cy);
-				olc::vf2d br(cx,-cy);
-				olc::vf2d tr(cx,cy);
-
-				tl = (hilmisu::Utilities::rotate_point(tl.x,tl.y,m_angle) + half_dims + vRects[0].pos);
-				bl = (hilmisu::Utilities::rotate_point(bl.x,bl.y,m_angle) + half_dims + vRects[0].pos);
-				br = (hilmisu::Utilities::rotate_point(br.x,br.y,m_angle) + half_dims + vRects[0].pos);
-				tr = (hilmisu::Utilities::rotate_point(tr.x,tr.y,m_angle) + half_dims + vRects[0].pos);
-
-				//vRects[0].pos = tl;
-
-
-				DrawLine(tl,tr);
-				DrawLine(tl,bl);
-				DrawLine(bl,br);
-				DrawLine(tr,br);
-
-
-				
-				// DrawLine(temp5,temp6);
-					}
+		}
+		else if(speed == 0.0f)
+		{
+			//what happens when speed is 0 ???
+			
 		}
 
+		tl = (hilmisu::Utilities::rotate_point(tl.x,tl.y,m_angle) + half_dims + vRects[0].pos);
+		bl = (hilmisu::Utilities::rotate_point(bl.x,bl.y,m_angle) + half_dims + vRects[0].pos);
+		br = (hilmisu::Utilities::rotate_point(br.x,br.y,m_angle) + half_dims + vRects[0].pos);
+		tr = (hilmisu::Utilities::rotate_point(tr.x,tr.y,m_angle) + half_dims + vRects[0].pos);
+
+		DrawLine(tl,tr);
+		DrawLine(tl,bl);
+		DrawLine(bl,br);
+		DrawLine(tr,br);
 		createRandomTraffic(fElapsedTime);
 
-		// Update the player rectangles position, with its modified velocity
-		// if(direction == 0)
-		// 	vRects[0].pos.x +=  speed ;
-		// else
-		// 	vRects[0].pos.x -=  speed ;
-
-		//vRects[0].pos.y -=  speed ;
-
-		//std::cout << checkcollisionbothways(vRects[0],vRects[1]) << std::endl;
-
-		//vRects[0].pos -= {(sin(angle)) * speed, (cos(angle)) * speed};
-
-		//std::cout << sinf(angle) * speed << "  #############  " << cosf(angle) * speed  << std::endl;
 
 		// Draw all rectangles
-		for (const auto &r : vRects)
-			DrawRect(r.pos, r.size, olc::WHITE);
-
+		for (int i=0; i< vRects.size();i++)
+		{
+			if(i != 0)//don't draw the 0th index, it is drawed within our calculations above
+				DrawRect(vRects[i].pos, vRects[i].size, olc::WHITE);
+		}
 
 		vRects[3].pos.y += max_speed * fElapsedTime * 5;
 
+		vRects[0].pos.y -= speed * cosf(m_angle);
+		vRects[0].pos.x += speed * sinf(m_angle);
 
 		return true;
 	}
