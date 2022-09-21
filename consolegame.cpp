@@ -15,15 +15,15 @@ public:
 	}
 
 	std::vector<hilmisu::Utilities::rect> vRects;
-
+	
 public:
 	void createRandomTraffic(float fElapsedTime)
 	{
 		float x_value = hilmisu::Utilities::rand_FloatRange(50.0f, 160.0f);
 		// to do
-		if (vRects.size() > 3)
+		if (vRects.size() > 1)
 		{
-			if (vRects[3].pos.y > 240)
+			if (vRects[1].pos.y > 240)
 				vRects.pop_back();
 		}
 		else
@@ -40,15 +40,19 @@ public:
 	bool OnUserCreate() override
 	{
 		vRects.push_back({{120.0f, 160.0f}, {10.0f, 40.0f}}); // car rectangle
-		vRects.push_back({{50.0f, 0.0f}, {1.0f, 1000.0f}});	  // left wall
-		vRects.push_back({{200.0f, 0.0f}, {1.0f, 1000.0f}});  // right wall
+		//vRects.push_back({{50.0f, 0.0f}, {1.0f, 1000.0f}});	  // left wall
+		//vRects.push_back({{200.0f, 0.0f}, {1.0f, 1000.0f}});  // right wall
 
+		
 		return true;
 	}
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
 		Clear(olc::DARK_BLUE);
+
+		DrawLine(50,500,50,-500); //left wall
+		DrawLine(200,500,200,-500); //right wall
 
 		if (GetKey(olc::Key::W).bHeld)
 			speed += acceleration;
@@ -118,6 +122,13 @@ public:
 		DrawLine(tl,bl);
 		DrawLine(bl,br);
 		DrawLine(tr,br);
+
+		//Draw(tl,olc::RED);
+		Draw(tl,olc::RED);
+		//Draw(br,olc::DARK_CYAN);
+		//Draw(tr,olc::DARK_GREEN);
+
+
 		createRandomTraffic(fElapsedTime);
 
 
@@ -128,10 +139,22 @@ public:
 				DrawRect(vRects[i].pos, vRects[i].size, olc::WHITE);
 		}
 
-		vRects[3].pos.y += max_speed * fElapsedTime * 5;
+		vRects[1].pos.y += max_speed * fElapsedTime * 5;
 
-		vRects[0].pos.y -= speed * cosf(m_angle);
 		vRects[0].pos.x += speed * sinf(m_angle);
+		vRects[0].pos.y -= speed * cosf(m_angle);
+
+		//collision detection to walls
+		if(br.x <= 50.0f || tr.x <= 50.0f) std::cout << "hit the leftWall" << std::endl;
+		if(bl.x >= 200.0f || tl.x >= 200.0f) std::cout << "hit the rightWall" << std::endl;
+
+
+		//if(hilmisu::Utilities::checkcollisionbothways(vRects[0],vRects[1])) std::cout << "hit the rightWall" << std::endl;
+		//if(hilmisu::Utilities::checkcollisionbothways(vRects[0],vRects[2])) std::cout << "hit the rightWall" << std::endl;
+		//if(hilmisu::Utilities::checkcollisionbothways(vRects[0],vRects[3])) std::cout << "hit the traffic" << std::endl;
+
+		//std::cout << vRects[0].pos.x << "," <<  tl.x << std::endl;
+
 
 		return true;
 	}
