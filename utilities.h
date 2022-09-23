@@ -13,6 +13,10 @@ namespace hilmisu{
                 olc::vf2d pos;
                 olc::vf2d size;
             };
+            struct matrix3x3
+            {
+                float m[3][3];
+            };
             static bool checkcollisiononeway(rect rect1, rect rect2)
             {
                 if (rect1.pos.x < rect2.pos.x + rect2.size.x &&
@@ -45,6 +49,11 @@ namespace hilmisu{
             static float rand_FloatRange(float a, float b)
             {
                 return ((b - a) * ((float)rand() / RAND_MAX)) + a;
+            }
+            static void Forward(matrix3x3 &mat, float in_x, float in_y, float &out_x, float &out_y)
+            {
+                out_x = in_x * mat.m[0][0] + in_y * mat.m[1][0] + mat.m[2][0];
+                out_y = in_x * mat.m[0][1] + in_y * mat.m[1][1] + mat.m[2][1];
             }
             static olc::vf2d DrawRotatedRectangle(const olc::vf2d& pos, rect rectangle, const float fAngle)
             {
