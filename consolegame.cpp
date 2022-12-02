@@ -14,7 +14,7 @@ public:
 		sAppName = "Rectangles!";
 	}
 
-	std::vector<hilmisu::Utilities::rect> vRects;
+	std::vector<hilmisu::Utilities::Rectangle> vRects;
 	olc::Sprite *sprCar;
 	
 public:
@@ -24,11 +24,11 @@ public:
 		// to do
 		if (vRects.size() > 1)
 		{
-			if (vRects[1].pos.y > 240)
+			if (vRects[1].y1 > 240)
 				vRects.pop_back();
 		}
-		else
-			vRects.push_back({{x_value, -50.0f}, {10.0f, 40.0f}});
+		// else
+		// 	vRects.push_back({{x_value, -50.0f}, {10.0f, 40.0f}});
 	}
 
 	float speed = 0.0f;
@@ -40,10 +40,13 @@ public:
 
 	bool OnUserCreate() override
 	{
-		vRects.push_back({{120.0f, 160.0f}, {10.0f, 40.0f}}); // car rectangle
-		//vRects.push_back({{50.0f, 0.0f}, {1.0f, 1000.0f}});	  // left wall
-		//vRects.push_back({{200.0f, 0.0f}, {1.0f, 1000.0f}});  // right wall
-
+		hilmisu::Utilities::Rectangle carRectangle;
+		carRectangle.x1 = 120.0f;
+		carRectangle.y1 = 160.0f;
+		carRectangle.x2 = 130.0f;
+		carRectangle.y2 = 200.0f;
+		
+		vRects.push_back(carRectangle); // car rectangle
 		
 		sprCar = new olc::Sprite("car_top1_resized.png");
 
@@ -88,8 +91,8 @@ public:
 		}
 
 
-		float cx = vRects[0].size.x / 2;
-		float cy = vRects[0].size.y / 2;
+		float cx = vRects[0].width / 2;
+		float cy = vRects[0].height / 2;
 
 		olc::vf2d half_dims(cx,cy);
 		olc::vf2d tr(-cx,cy);
@@ -130,10 +133,11 @@ public:
 			
 		}
 
-		tl = (hilmisu::Utilities::rotate_point(tl.x,tl.y,m_angle) + half_dims + vRects[0].pos);
-		bl = (hilmisu::Utilities::rotate_point(bl.x,bl.y,m_angle) + half_dims + vRects[0].pos);
-		br = (hilmisu::Utilities::rotate_point(br.x,br.y,m_angle) + half_dims + vRects[0].pos);
-		tr = (hilmisu::Utilities::rotate_point(tr.x,tr.y,m_angle) + half_dims + vRects[0].pos);
+		olc::vf2d pos = {vRects[0].x1,vRects[0].y1} ;
+		tl = (hilmisu::Utilities::rotate_point(tl.x,tl.y,m_angle) + half_dims + pos);
+		bl = (hilmisu::Utilities::rotate_point(bl.x,bl.y,m_angle) + half_dims + pos);
+		br = (hilmisu::Utilities::rotate_point(br.x,br.y,m_angle) + half_dims + pos);
+		tr = (hilmisu::Utilities::rotate_point(tr.x,tr.y,m_angle) + half_dims + pos);
 
 		DrawSprite(bl,sprCar);
 
@@ -162,13 +166,13 @@ public:
 		for (int i=0; i< vRects.size();i++)
 		{
 			if(i != 0)//don't draw the 0th index, it is drawed within our calculations above
-				DrawRect(vRects[i].pos, vRects[i].size, olc::WHITE);
+				DrawRect({vRects[i].x1,vRects[i].y1}, {vRects[i].width,vRects[i].height}, olc::WHITE);
 		}
 
-		vRects[1].pos.y += max_speed * fElapsedTime * 5;
+		vRects[1].y1 += max_speed * fElapsedTime * 5;
 
-		vRects[0].pos.x += speed * sinf(m_angle);
-		vRects[0].pos.y -= speed * cosf(m_angle);
+		vRects[0].x1 += speed * sinf(m_angle);
+		vRects[0].y1 -= speed * cosf(m_angle);
 
 		return true;
 	}
