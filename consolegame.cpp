@@ -42,8 +42,8 @@ public:
 		hilmisu::Utilities::Rectangle carRectangle;
 		carRectangle.x = 120.0f;
 		carRectangle.y = 160.0f;
-		carRectangle.width = 10.0f;
-		carRectangle.height = 40.0f;
+		carRectangle.width = 10;
+		carRectangle.height = 40;
 		
 		vRects.push_back(carRectangle); // car rectangle
 		
