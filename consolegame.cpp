@@ -24,7 +24,7 @@ public:
 		// to do
 		if (vRects.size() > 1)
 		{
-			if (vRects[1].y1 > 240)
+			if (vRects[1].y > 240)
 				vRects.pop_back();
 		}
 		// else
@@ -41,10 +41,10 @@ public:
 	bool OnUserCreate() override
 	{
 		hilmisu::Utilities::Rectangle carRectangle;
-		carRectangle.x1 = 120.0f;
-		carRectangle.y1 = 160.0f;
-		carRectangle.x2 = 130.0f;
-		carRectangle.y2 = 200.0f;
+		carRectangle.x = 120.0f;
+		carRectangle.y = 160.0f;
+		carRectangle.width = 10.0f;
+		carRectangle.height = 40.0f;
 		
 		vRects.push_back(carRectangle); // car rectangle
 		
@@ -94,11 +94,8 @@ public:
 		float cx = vRects[0].width / 2;
 		float cy = vRects[0].height / 2;
 
-		olc::vf2d half_dims(cx,cy);
-		olc::vf2d tr(-cx,cy);
-		olc::vf2d br(-cx,-cy);
-		olc::vf2d bl(cx,-cy);
-		olc::vf2d tl(cx,cy);
+		hilmisu::Utilities::Point center{cx,cy};
+
 
 		if (speed != 0.0f)
 		{
@@ -122,7 +119,7 @@ public:
 			//what happens when speed is 0 ???
 			if(m_angle < 0.0f)
 			{
-				m_angle += 0.01f
+				m_angle += 0.01f;
 			}
 			else if(m_angle > 0.0f)
 			{
@@ -133,13 +130,15 @@ public:
 			
 		}
 
-		olc::vf2d pos = {vRects[0].x1,vRects[0].y1} ;
-		tl = (hilmisu::Utilities::rotate_point(tl.x,tl.y,m_angle) + half_dims + pos);
-		bl = (hilmisu::Utilities::rotate_point(bl.x,bl.y,m_angle) + half_dims + pos);
-		br = (hilmisu::Utilities::rotate_point(br.x,br.y,m_angle) + half_dims + pos);
-		tr = (hilmisu::Utilities::rotate_point(tr.x,tr.y,m_angle) + half_dims + pos);
+		
 
-		DrawSprite(bl,sprCar);
+		hilmisu::Utilities::rotateRectangle(vRects[0],center,m_angle);
+		olc::vf2d pos = {vRects[0].x,vRects[0].y} ;
+		olc::vf2d size = {vRects[0].width,vRects[0].height} ;
+
+		DrawRect(pos, size, olc::WHITE);
+
+		DrawSprite(pos,sprCar);
 
 		//collision detection to walls
 		// if(br.x <= 50.0f || tr.x <= 50.0f) {
@@ -154,10 +153,10 @@ public:
 		// 	tl.x = 200.0f;
 		// } 
 
-		DrawLine(tl,tr);
-		DrawLine(tl,bl);
-		DrawLine(bl,br);
-		DrawLine(tr,br);
+		// DrawLine(tl,tr);
+		// DrawLine(tl,bl);
+		// DrawLine(bl,br);
+		// DrawLine(tr,br);
 
 		createRandomTraffic(fElapsedTime);
 
@@ -166,13 +165,13 @@ public:
 		for (int i=0; i< vRects.size();i++)
 		{
 			if(i != 0)//don't draw the 0th index, it is drawed within our calculations above
-				DrawRect({vRects[i].x1,vRects[i].y1}, {vRects[i].width,vRects[i].height}, olc::WHITE);
+				DrawRect({vRects[i].x,vRects[i].y}, {vRects[i].width,vRects[i].height}, olc::WHITE);
 		}
 
-		vRects[1].y1 += max_speed * fElapsedTime * 5;
+		vRects[1].y += max_speed * fElapsedTime * 5;
 
-		vRects[0].x1 += speed * sinf(m_angle);
-		vRects[0].y1 -= speed * cosf(m_angle);
+		vRects[0].x += speed * sinf(m_angle);
+		vRects[0].y -= speed * cosf(m_angle);
 
 		return true;
 	}
