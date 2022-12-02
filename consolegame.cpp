@@ -1,6 +1,5 @@
 
 #define OLC_PGE_APPLICATION
-#include "olcPixelGameEngine.h"
 #include "utilities.h"
 #include <algorithm>
 #include <functional>

@@ -11,7 +11,7 @@ namespace hilmisu{
             struct Rectangle
             {
                 float x,y;
-                float width,height;
+                int width,height;
             };
             // A Point structure to represent a point in 2D plane  
             struct Point 
