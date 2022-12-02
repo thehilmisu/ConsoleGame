@@ -8,43 +8,42 @@ namespace hilmisu{
 
     class Utilities{
         public:
-            struct rect
+            struct Rectangle
             {
-                olc::vf2d pos;
-                olc::vf2d size;
+                float x1,y1,x2,y2;
+                float width = x2-x1;
+                float height = y2-y1;
             };
+            // A Point structure to represent a point in 2D plane  
+            struct Point 
+            { 
+                float x; 
+                float y; 
+            }; 
             struct matrix3x3
             {
                 float m[3][3];
             };
-            static bool checkcollisiononeway(rect rect1, rect rect2)
-            {
-                if (rect1.pos.x < rect2.pos.x + rect2.size.x &&
-                    rect1.pos.x + rect1.size.x > rect2.pos.x &&
-                    rect1.pos.y < rect2.pos.y + rect2.size.y &&
-                    rect1.size.y + rect1.pos.y > rect2.pos.y)
-                {
-                    return true;
-                }
-                return false;
-            }
-            static bool checkcollisiononeway(float x1, float y1, float width1, float height1, 
-                                             float x2, float y2, float width2, float height2)
-            {
-                if (x1 < x2 + width2 &&
-                    x1 + width1 > x2 &&
-                    y1 < y2 + height2 &&
-                    height1 + y1 > y2)
-                {
-                    return true;
-                }
-                return false;
-            }
+            bool isThereACollision(Rectangle a, Rectangle b) {
+                // Check if one rectangle is on the left side of the other
+                if (a.x1 > b.x2 || b.x1 > a.x2)
+                    return false;
 
-            static bool checkcollisionbothways(rect rectA, rect rectB)
-            {
-                return checkcollisiononeway(rectA, rectB) || checkcollisiononeway(rectB, rectA);
+                // Check if one rectangle is above the other
+                if (a.y1 > b.y2 || b.y1 > a.y2)
+                    return false;
+
+                // If none of the above conditions are true, then there is a collision
+                return true;
             }
+            // Returns true if the point p is inside the rectangle. 
+            bool isInside(Rectangle rect, Point p) 
+            { 
+                if(p.x >= rect.x1 && p.x <= (rect.x1 + rect.width) && 
+                    p.y >= rect.y1 && p.y <= (rect.y1 + rect.height)) 
+                    return true; 
+                return false; 
+            } 
 
             static float rand_FloatRange(float a, float b)
             {
@@ -55,7 +54,7 @@ namespace hilmisu{
                 out_x = in_x * mat.m[0][0] + in_y * mat.m[1][0] + mat.m[2][0];
                 out_y = in_x * mat.m[0][1] + in_y * mat.m[1][1] + mat.m[2][1];
             }
-            static olc::vf2d DrawRotatedRectangle(const olc::vf2d& pos, rect rectangle, const float fAngle)
+            static olc::vf2d DrawRotatedRectangle(const olc::vf2d& pos, Rectangle rectangle, const float fAngle)
             {
                 float x1 = cos(fAngle) * pos.x - sin(fAngle) * pos.y;
                 float y1 = sin(fAngle) * pos.x + cos(fAngle) * pos.y;
