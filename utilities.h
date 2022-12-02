@@ -96,12 +96,12 @@ namespace hilmisu{
 
 
                 // Find new corner points
-                rect.x = min(p1.x, min(p2.x, min(p3.x, p4.x)));
-                rect.y = min(p1.y, min(p2.y, min(p3.y, p4.y)));
+                rect.x = std::min(p1.x, std::min(p2.x, std::min(p3.x, p4.x)));
+                rect.y = std::min(p1.y, std::min(p2.y, std::min(p3.y, p4.y)));
 
-                rect.width = max(p1.x, max(p2.x, max(p3.x, p4.x))) -
+                rect.width = std::max(p1.x, std::max(p2.x, std::max(p3.x, p4.x))) -
                             rect.x;
-                rect.height = max(p1.y, max(p2.y, max(p3.y, p4.y))) -
+                rect.height = std::max(p1.y, std::max(p2.y, std::max(p3.y, p4.y))) -
                             rect.y;
             }
 
